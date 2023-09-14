@@ -70,7 +70,7 @@ source vars.sh
 
 途中まで進めていたチュートリアルのページまで `Next` ボタンを押し、進めてください。
 
-## [ハッカソン閉幕寸前]
+## chapter 1
 
 [最終動作サンプルはこちら](https://huit-todo.web.app/)
 
@@ -83,13 +83,11 @@ source vars.sh
 
 **「任せてくださいHaru部長！私が2時間でGCP上にアプリをデプロイしてみせます！」**
 
-## chapter 2 アーキテクチャ
-
-(ストーリー考えるの面倒になったので以下普通に解説します)
+(以下ストーリー考えるの面倒になったので解説に移ります)
 
 今回は以下のようなアーキテクチャでWebアプリケーションを構築する。
 
-![architecture](./image/architecture.png)
+![architecture](https://raw.githubusercontent.com/shoumoji/huit-gcp-study/main/image/architecture.png)
 
 ### 技術詳細
 
