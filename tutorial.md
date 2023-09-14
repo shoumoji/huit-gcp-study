@@ -1,5 +1,7 @@
 # huit-gcp-study
 
+## 事前準備
+
 今回はGCPへの操作は**全てコンソール上でコマンドを用いて**行います。
 
 ### 必要なロール(権限)の確認
@@ -13,8 +15,8 @@
 
 #### GCP のプロジェクト ID を環境変数に設定
 
-環境変数 `PROJECT_ID` に GCP プロジェクト ID を設定します。[GOOGLE_CLOUD_PROJECT_ID] 部分にご使用になられる Google Cloud プロジェクトの ID を入力してください。
-例: `export PROJECT_ID=huit-dmm-study-ayumin`
+環境変数 `PROJECT_ID` に GCP プロジェクト ID を設定します。[GOOGLE_CLOUD_PROJECT_ID] 部分に使用する Google Cloud プロジェクトの ID を入力してください。
+例: `export PROJECT_ID=huit-gcp-study-ayumin`
 
 ```bash
 export PROJECT_ID=[GOOGLE_CLOUD_PROJECT_ID]
@@ -59,7 +61,7 @@ cd ~/cloudshell_open/huit-gcp-study/
 ### **2. チュートリアルを開く**
 
 ```bash
-teachme story.md
+teachme tutorial.md
 ```
 
 ### **3. gcloud のデフォルト設定**
@@ -70,20 +72,9 @@ source vars.sh
 
 途中まで進めていたチュートリアルのページまで `Next` ボタンを押し、進めてください。
 
-## chapter 1
+## 本ハンズオンについて
 
 [最終動作サンプルはこちら](https://huit-todo.web.app/)
-
-3人チームで開発していたあなたは、ハッカソンで画期的なプロダクト「HUIT TODO」を完成させた。
-ハッカソンもあと2時間で結果発表というところで、チームリーダーのHaruはあることを口にする。
-
-**「あれ？ このアプリってローカルでしかアクセスできないんですか？」**
-
-残された時間は2時間。インフラ担当のあなたはGoogle Cloud(以下GCP)のことを思い出す。
-
-**「任せてくださいHaru部長！私が2時間でGCP上にアプリをデプロイしてみせます！」**
-
-(以下ストーリー考えるの面倒になったので解説に移ります)
 
 今回は以下のようなアーキテクチャでWebアプリケーションを構築する。
 
@@ -108,4 +99,26 @@ Cloud Runはコンテナを簡単にデプロイできるサービスで、コ�
 ホスト先: Cloud SQL (PostgreSQL)
 Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベースを提供するサービスで、今回はPostgreSQLを使用する。
 
-## chapter 3 GCPを使い始める
+## firebase にフロントエンドをデプロイする
+
+1. firebaseのプロジェクトを作成する
+```bash
+firebase projects:create $PROJECT_ID
+```
+
+[firebase のコンソール](https://console.firebase.google.com/)にアクセスし、プロジェクトが作成されたか確認する(Googleアカウントが複数ある場合は、ログインしているアカウントがGCPで使用しているものか確認する)
+
+2. firebase hosting の実験的機能を有効化する (Next.jsを使用するため)
+```bash
+firebase experiments:enable webframeworks
+```
+
+3. firebase hosting の初期化を行う
+```bash
+firebase init hosting
+```
+
+4. デプロイする
+```bash
+cd frontend && firebase deploy
+```
