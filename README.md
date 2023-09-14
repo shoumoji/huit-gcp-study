@@ -2,6 +2,11 @@
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.png)](https://ssh.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/shoumoji/huit-gcp-study&cloudshell_tutorial=tutorial.md&shellonly=true)
 
+## 事前準備
+
+Trust repo にチェックを入れて進んでください。
+
+![trust_repo](https://raw.githubusercontent.com/shoumoji/huit-gcp-study/main/image/trust_repo.png)
 
 ## やること
 
