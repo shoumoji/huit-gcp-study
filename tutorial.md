@@ -102,23 +102,22 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 ## firebase にフロントエンドをデプロイする
 
 1. firebaseのプロジェクトを作成する
-```bash
-firebase projects:create $PROJECT_ID
-```
-
-[firebase のコンソール](https://console.firebase.google.com/)にアクセスし、プロジェクトが作成されたか確認する(Googleアカウントが複数ある場合は、ログインしているアカウントがGCPで使用しているものか確認する)
+	```bash
+	firebase projects:create $PROJECT_ID
+	```
+	[firebase のコンソール](https://console.firebase.google.com/)にアクセスし、プロジェクトが作成されたか確認する(Googleアカウントが複数ある場合は、ログインしているアカウントがGCPで使用しているものか確認する)
 
 2. firebase hosting の実験的機能を有効化する (Next.jsを使用するため)
-```bash
-firebase experiments:enable webframeworks
-```
+	```bash
+	firebase experiments:enable webframeworks
+	```
 
 3. firebase hosting の初期化を行う
-```bash
-firebase init hosting
-```
+	```bash
+	firebase init hosting
+	```
 
 4. デプロイする
-```bash
-cd frontend && firebase deploy
-```
+	```bash
+	cd frontend && firebase deploy
+	```
