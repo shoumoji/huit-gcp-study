@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 db_host = os.environ.get("POSTGRES_HOST", "db")
 db_user = os.environ.get("POSTGRES_USER", "postgres")
-db_password = os.environ.get("POSTGRES_PASSWORD", "password")
+db_password = os.environ.get("POSTGRES_PASSWORD", "postgres")
 db_database = os.environ.get("POSTGRES_DB", "todo_db")
 
 app = Flask(__name__)
