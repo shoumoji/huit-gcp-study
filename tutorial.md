@@ -101,17 +101,23 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 
 ## VPCネットワークを作成する
 
-まずはVPCネットワークを作成します。これはCloud SQLを作成する際にVPCネットワーク内に構築するためです。(後でCloud Runを接続する際に必要になります)
-なお今回VPCはAPI-DB間の通信にしか使用しないため、インターネットとアクセスするためのゲートウェイやルーティングなどの設定はせず、サブネットを1つ作成するだけで終わります。
+まずはVPCネットワークを作成します。
+
+このVPCは、Cloud Run(API)をVPC経由でCloud SQL(DB)に接続するために使用します。
+
+今回VPCはAPI-DB間の通信にしか使用しないため、インターネットにアクセスするためのインターネットゲートウェイ(IGW)やルーティングなどの設定はしません。
 
 - 今後のハンズオンで必要なAPIを一括で有効化しておきます
 	```bash
 	gcloud services enable \
 	run.googleapis.com \
 	compute.googleapis.com \
-	sqladmin.googleapis.com
+	sqladmin.googleapis.com \
+	servicenetworking.googleapis.com \
+	dns.googleapis.com \
+	networkconnectivity.googleapis.com \
+	artifactregistry.googleapis.com
 	```
-
 - VPCネットワークを作成します
 	```bash
 	gcloud compute networks create huit-gcp-study-vpc \
@@ -119,27 +125,97 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 	--mtu=1460 \
 	--bgp-routing-mode=regional
 	```
-- VPC内にサブネットを切ります。今回はIPv4のみ使用し、privateなサブネットを作成します。
+- VPCにCloud Runに割り当てるためのサブネットを作成します
 	```bash
-	gcloud compute networks subnets create private-subnet1 \
-	--range=10.0.128.0/22 \
-	--stack-type=IPV4_ONLY \
+	gcloud compute networks subnets create huit-gcp-study-subnet \
 	--network=huit-gcp-study-vpc \
+	--range=10.0.1.0/24 \
 	--region=asia-northeast1
+	```
+- VPCネットワークの持つIPの中で、Cloud SQLに割り当てるIP範囲を作成します。
+	```bash
+	gcloud compute addresses create google-managed-services-ips \
+	--global \
+	--purpose=VPC_PEERING \
+	--prefix-length=24 \
+	--network=huit-gcp-study-vpc
+	```
+- VPCネットワークピアリング接続を作成します。これはCloud SQLとVPCの接続に使います。
+	```bash
+	gcloud services vpc-peerings connect \
+    --service=servicenetworking.googleapis.com \
+    --ranges=google-managed-services-ips \
+    --network=huit-gcp-study-vpc
 	```
 
 ## Cloud SQL にデータベースを作成する
 
 まずはCloud SQLにデータベースを作成します。今回はAPIがPostgreSQLを使用しているので、PostgreSQLで作成します。
 
+先ほど作成したVPCを指定することで、Cloud SQLとVPCを接続しています。
+
 - Cloud SQL で PostgreSQL インスタンスを作成します
 	```bash
-	gcloud beta sql instances create huit-gcp-study-db \
+	gcloud beta sql instances create huit-gcp-study-postgres \
+	--database-version=POSTGRES_15 \
 	--tier=db-f1-micro \
-	--region=ap-northeast-1 \
+	--region=asia-northeast1 \
 	--network=huit-gcp-study-vpc \
 	--no-assign-ip \
 	--enable-google-private-path
+	```
+- postgres ユーザにパスワードを設定します
+	```bash
+	gcloud sql users set-password postgres \
+	--instance=huit-gcp-study-postgres \
+	--password=postgres
+	```
+
+## Cloud Run にバックエンドをデプロイする
+
+Cloud Run は、コンテナをデプロイするためのサービスです。
+
+### コンテナのbuild&push
+まず、今回使用するAPIサーバをコンテナ化し、コンテナを保存するサービスであるArtifact Registryにコンテナをpushします。
+
+- apiディレクトリにcdします。
+	```bash
+	cd api
+	```
+- コンテナ用 Artifact Registry を作成します
+	```bash
+	gcloud artifacts repositories create huit-gcp-study \
+    --repository-format=docker \
+    --location=asia-northeast1 \
+    --async
+	```
+- Artifact Registryに対するリクエストを認証します
+	```bash
+	gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+	```
+- コンテナをビルドします (エラーが出る場合、PROJECT_ID 環境変数にGCPのプロジェクトIDが入っているか確認してください)
+	```bash
+	docker build -t asia-northeast1-docker.pkg.dev/$PROJECT_ID/huit-gcp-study/api:latest .
+	```
+- コンテナを Artifact Registry に push します
+	```bash
+	docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/huit-gcp-study/api:latest
+	```
+	これで[Artifact Registry の huit-gcp-study/api に latest タグのついたコンテナが保存](https://console.cloud.google.com/artifacts)されました
+
+### Cloud Run にデプロイ
+
+- 先ほど Artifact Registry に保存したコンテナを Cloud Run にデプロイします
+	```bash
+	gcloud run deploy huit-gcp-study-api \
+	--allow-unauthenticated \
+	--image asia-northeast1-docker.pkg.dev/$PROJECT_ID/huit-gcp-study/api:latest \
+	--region asia-northeast1
+	--network=huit-gcp-study-vpc
+	--subnet=huit-gcp-study-subnet
+	--vpc-egress=private-ranges-only
+	--region=asia-northeast1
+	--set-env-vars="POSTGRES_HOST=$(gcloud sql instances describe huit-gcp-study-postgres --format="value(ipAddresses.ipAddress)"),POSTGRES_USER=postgres,POSTGRES_PASSWORD=postgres,POSTGRES_DB=todo_db"
 	```
 
 ## firebase にフロントエンドをデプロイする
