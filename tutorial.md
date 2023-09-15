@@ -108,7 +108,8 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 	```bash
 	gcloud services enable \
 	run.googleapis.com \
-	compute.googleapis.com
+	compute.googleapis.com \
+	sqladmin.googleapis.com
 	```
 
 - VPCネットワークを作成します
@@ -129,9 +130,17 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 
 ## Cloud SQL にデータベースを作成する
 
-まずはCloud SQLにデータベースを作成します。今回はAPIがPostgreSQLデータベースで書かれているので、PostgreSQLで作成します。
+まずはCloud SQLにデータベースを作成します。今回はAPIがPostgreSQLを使用しているので、PostgreSQLで作成します。
 
-
+- Cloud SQL で PostgreSQL インスタンスを作成します
+	```bash
+	gcloud beta sql instances create huit-gcp-study-db \
+	--tier=db-f1-micro \
+	--region=ap-northeast-1 \
+	--network=huit-gcp-study-vpc \
+	--no-assign-ip \
+	--enable-google-private-path
+	```
 
 ## firebase にフロントエンドをデプロイする
 
@@ -150,7 +159,7 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 	npm install
 	```
 - フロントエンドをビルドします
-- ```bash
+	```bash
 	npm run build
 	```
 - firebase にログインします
