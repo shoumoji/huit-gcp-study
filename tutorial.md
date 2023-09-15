@@ -13,6 +13,14 @@
 
 新規にプロジェクトを作った場合、もしくはこちらでプロジェクトを用意した場合問題ないですが、既存のプロジェクトで権限周りを触っている方は注意してください。
 
+### Cloud Shell の gcloud SDK をアップグレード
+
+人によっては古いgcloud SDKが入っていて問題がおきる可能性があるので、更新します。
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
 #### GCP のプロジェクト ID を環境変数に設定
 
 環境変数 `PROJECT_ID` に GCP プロジェクト ID を設定します。[GOOGLE_CLOUD_PROJECT_ID] 部分に使用する Google Cloud プロジェクトの ID を入力してください。
