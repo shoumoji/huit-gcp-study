@@ -74,7 +74,7 @@ source vars.sh
 
 ## 本ハンズオンについて
 
-[最終動作サンプルはこちら](https://huit-todo.web.app/)
+[最終動作サンプルはこちら](https://huit-gcp-study-ayumin.web.app/)
 
 今回は以下のようなアーキテクチャでWebアプリケーションを構築します。
 
@@ -98,6 +98,29 @@ Cloud Runはコンテナを簡単にデプロイできるサービスです。�
 
 ホスト先: Cloud SQL (PostgreSQL)
 Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベースを提供するサービスです。今回はPostgreSQLを使用します。
+
+## 事前準備 (Cloud shell)
+
+今回はCloud shellを使用してハンズオンを進めますが、Open in Cloud Shell をクリックすると別のプロジェクトが開いてしまう方は、ブラウザ上でプロジェクトを切り替えてください。
+
+その上で以下のコマンドを実行してください。
+
+- cloud shell のディレクトリを作成する (既にある場合は無視してOK)
+	```bash
+	mkdir -p ~/cloudshell_open
+	```
+- ディレクトリに移動する
+	```bash
+	cd ~/cloudshell_open
+	```
+- 今回使用するリポジトリをクローンする
+	```bash
+	git clone https://github.com/shoumoji/huit-gcp-study.git
+	```
+- リポジトリ内にディレクトリを移動する
+	```bash
+	cd huit-gcp-study
+	```
 
 ## VPCネットワークを作成する
 
@@ -170,6 +193,10 @@ Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベース�
 	--instance=huit-gcp-study-postgres \
 	--password=postgres
 	```
+- todo_db データベースを作成します
+	```bash
+	gcloud sql databases create todo_db --instance=huit-gcp-study-postgres
+	```
 
 ## Cloud Run にバックエンドをデプロイする
 
@@ -180,7 +207,7 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 
 - apiディレクトリにcdします。
 	```bash
-	cd api
+	cd ~/cloudshell_open/huit-gcp-study/api
 	```
 - コンテナ用 Artifact Registry を作成します
 	```bash
@@ -207,15 +234,42 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 
 - 先ほど Artifact Registry に保存したコンテナを Cloud Run にデプロイします
 	```bash
-	gcloud run deploy huit-gcp-study-api \
+	gcloud beta run deploy huit-gcp-study-api \
 	--allow-unauthenticated \
 	--image asia-northeast1-docker.pkg.dev/$PROJECT_ID/huit-gcp-study/api:latest \
-	--region asia-northeast1
-	--network=huit-gcp-study-vpc
-	--subnet=huit-gcp-study-subnet
-	--vpc-egress=private-ranges-only
-	--region=asia-northeast1
-	--set-env-vars="POSTGRES_HOST=$(gcloud sql instances describe huit-gcp-study-postgres --format="value(ipAddresses.ipAddress)"),POSTGRES_USER=postgres,POSTGRES_PASSWORD=postgres,POSTGRES_DB=todo_db"
+	--region asia-northeast1 \
+	--network=huit-gcp-study-vpc \
+	--subnet=huit-gcp-study-subnet \
+	--vpc-egress=private-ranges-only \
+	--region=asia-northeast1 \
+	--set-env-vars="POSTGRES_HOST=$(gcloud sql instances describe huit-gcp-study-postgres --format="value(ipAddresses.ipAddress)"),POSTGRES_USER=postgres,POSTGRES_PASSWORD=postgres,POSTGRES_DB=todo_db,PORT=8080"
+	```
+	成功すると、Service URLが出力されます。これがAPIのURLになります。
+	```bash
+	Deploying container to Cloud Run service [huit-gcp-study-api] in project [huit-gcp-study-ayumin] region [asia-northeast1]
+	OK Deploying... Done.
+	  OK Creating Revision...
+	  OK Routing traffic...
+	  OK Setting IAM Policy...
+	Done.
+	Service [huit-gcp-study-api] revision [huit-gcp-study-api-00006-lok] has been deployed and is serving 100 percent of traffic.
+	Service URL: https://huit-gcp-study-api-ikfpjobicq-an.a.run.app
+	```
+- (テスト) APIのURLを取得します
+	```bash
+	export API_ENDPOINT=$(gcloud run services describe huit-gcp-study-api --region asia-northeast1 --format="value(status.address.url)")
+	```
+- (テスト) APIにtodoタスクを登録してみましょう
+	```bash
+	curl -X POST -H "Content-Type:application/json" -d '{"content":"test"}' $API_ENDPOINT/todo
+	```
+- (テスト) todo が登録されたことを確認してみましょう
+	```bash
+	curl $API_ENDPOINT/todo/list
+	```
+	jsonで登録したtodoが返れば成功です。(idは任意の数値)
+	```json
+	{"content":"test","id":1}
 	```
 
 ## firebase にフロントエンドをデプロイする
@@ -224,11 +278,11 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 
 - frontend ディレクトリに移動します
 	```bash
-	cd frontend
+	cd ~/cloudshell_open/huit-gcp-study/frontend
 	```
 - フロントエンドからアクセスするバックエンドAPIのURLを設定します
 	```bash
-	echo "NEXT_PUBLIC_API_ENDPOINT=<Cloud RunのURLを設定する>" > .env.production
+	echo "NEXT_PUBLIC_API_ENDPOINT=$API_ENDPOINT" > .env.production
 	```
 - フロントエンドの依存関係をインストールします
 	```bash
@@ -271,7 +325,6 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 	```bash
 	firebase experiments:enable webframeworks
 	```
-
 - firebase hosting の初期化を行います
 	```bash
 	firebase init hosting
@@ -309,8 +362,26 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 
 	✔  Firebase initialization complete!
 	```
-
 - デプロイします
 	```bash
 	firebase deploy
 	```
+	デプロイが成功すると、フロントエンドのURLが表示されます。
+	```bash
+	=== Deploying to 'huit-gcp-study-ayumin'...
+
+	i  deploying hosting
+	i  hosting[huit-gcp-study-ayumin]: beginning deploy...
+	i  hosting[huit-gcp-study-ayumin]: found 25 files in .firebase/huit-gcp-study-ayumin/hosting
+	✔  hosting[huit-gcp-study-ayumin]: file upload complete
+	i  hosting[huit-gcp-study-ayumin]: finalizing version...
+	✔  hosting[huit-gcp-study-ayumin]: version finalized
+	i  hosting[huit-gcp-study-ayumin]: releasing new version...
+	✔  hosting[huit-gcp-study-ayumin]: release complete
+
+	✔  Deploy complete!
+
+	Project Console: https://console.firebase.google.com/project/huit-gcp-study-ayumin/overview
+	Hosting URL: https://huit-gcp-study-ayumin.web.app
+	```
+- 最後に、上で表示されたHosting URLにアクセスしましょう
