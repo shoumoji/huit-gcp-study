@@ -255,15 +255,15 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 	Service [huit-gcp-study-api] revision [huit-gcp-study-api-00006-lok] has been deployed and is serving 100 percent of traffic.
 	Service URL: https://huit-gcp-study-api-ikfpjobicq-an.a.run.app
 	```
-- (テスト) APIのURLを取得します
+- APIのURLを取得します
 	```bash
 	export API_ENDPOINT=$(gcloud run services describe huit-gcp-study-api --region asia-northeast1 --format="value(status.address.url)")
 	```
-- (テスト) APIにtodoタスクを登録してみましょう
+- APIにtodoタスクを登録してみましょう
 	```bash
 	curl -X POST -H "Content-Type:application/json" -d '{"content":"test"}' $API_ENDPOINT/todo
 	```
-- (テスト) todo が登録されたことを確認してみましょう
+- todo が登録されたことを確認してみましょう
 	```bash
 	curl $API_ENDPOINT/todo/list
 	```
