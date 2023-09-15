@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    env_file:
-      - ./frontend/.env.local
+    environment:
+      NEXT_PUBLIC_API_ENDPOINT: http://localhost:8081
   api:
     build:
       context: ./api
