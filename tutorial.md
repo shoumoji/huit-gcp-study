@@ -76,7 +76,7 @@ source vars.sh
 
 [最終動作サンプルはこちら](https://huit-todo.web.app/)
 
-今回は以下のようなアーキテクチャでWebアプリケーションを構築する。
+今回は以下のようなアーキテクチャでWebアプリケーションを構築します。
 
 ![architecture](https://raw.githubusercontent.com/shoumoji/huit-gcp-study/main/image/architecture.png)
 
@@ -86,38 +86,38 @@ source vars.sh
 
 デプロイ先: Firebase Hosting
 フレームワーク: Next.js (Reactのフレームワーク)
-Firebase Hostingは静的コンテンツを配信するためのサービスで、Next.jsなどのサーバサイドの処理が含まれるフレームワークも使用可能である。
+Firebase Hostingは静的コンテンツを配信するためのサービスで、Next.jsなどのサーバサイドの処理が含まれるフレームワークも最近使用可能になりました。
 
 #### バックエンド
 
 デプロイ先: Cloud Run
 フレームワーク: Flask (Python)
-Cloud Runはコンテナを簡単にデプロイできるサービスで、コンテナ化できるWebアプリケーションであれば、Python以外にもGoやRuby, PHPなど様々な言語で同じように利用できる。今回はPython(Flask)で書かれたAPIサーバをデプロイする。
+Cloud Runはコンテナを簡単にデプロイできるサービスです。コンテナ化できるWebアプリケーションであれば、Python以外にもGoやRuby, PHPなど様々な言語で同じように利用できます。今回はPython(Flask)で書かれたAPIサーバをデプロイします。
 
 #### データベース
 
 ホスト先: Cloud SQL (PostgreSQL)
-Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベースを提供するサービスで、今回はPostgreSQLを使用する。
+Cloud SQLはMySQLやPostgreSQLなどのリレーショナルデータベースを提供するサービスです。今回はPostgreSQLを使用します。
 
 ## firebase にフロントエンドをデプロイする
 
-1. firebaseのプロジェクトを作成する
+1. firebaseのプロジェクトを作成します
 	```bash
 	firebase projects:create $PROJECT_ID
 	```
-	[firebase のコンソール](https://console.firebase.google.com/)にアクセスし、プロジェクトが作成されたか確認する(Googleアカウントが複数ある場合は、ログインしているアカウントがGCPで使用しているものか確認する)
+	[firebase のコンソール](https://console.firebase.google.com/)にアクセスし、プロジェクトが作成されたか確認してください(Googleアカウントが複数ある場合は、ログインしているアカウントがGCPで使用しているものか要確認)
 
-2. firebase hosting の実験的機能を有効化する (Next.jsを使用するため)
+2. firebase hosting の実験的機能を有効化します (Next.jsを使用するため)
 	```bash
 	firebase experiments:enable webframeworks
 	```
 
-3. firebase hosting の初期化を行う
+3. firebase hosting の初期化を行います
 	```bash
 	firebase init hosting
 	```
 
-4. デプロイする
+4. デプロイします
 	```bash
 	cd frontend && firebase deploy
 	```
