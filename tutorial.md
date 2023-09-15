@@ -242,7 +242,7 @@ Cloud Run は、コンテナをデプロイするためのサービスです。
 	--subnet=huit-gcp-study-subnet \
 	--vpc-egress=private-ranges-only \
 	--region=asia-northeast1 \
-	--set-env-vars="POSTGRES_HOST=$(gcloud sql instances describe huit-gcp-study-postgres --format="value(ipAddresses.ipAddress)"),POSTGRES_USER=postgres,POSTGRES_PASSWORD=postgres,POSTGRES_DB=todo_db,PORT=8080"
+	--set-env-vars="POSTGRES_HOST=$(gcloud sql instances describe huit-gcp-study-postgres --format="value(ipAddresses.ipAddress)"),POSTGRES_USER=postgres,POSTGRES_PASSWORD=postgres,POSTGRES_DB=todo_db"
 	```
 	成功すると、Service URLが出力されます。これがAPIのURLになります。
 	```bash
