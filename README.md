@@ -1,6 +1,13 @@
 # huit-gcp-study
 
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.png)](https://ssh.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/shoumoji/huit-gcp-study&cloudshell_tutorial=tutorial.md&shellonly=true)
+## hackathon 編 (Cloud Run + Cloud SQL + FIrebase)
+
+
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.png)](https://ssh.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/shoumoji/huit-gcp-study&cloudshell_tutorial=tutorial_hackathon.md&shellonly=true)
+
+## Kubernetes 編 (Google Kubernetes Engine)
+
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.png)](https://ssh.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/shoumoji/huit-gcp-study&cloudshell_tutorial=tutorial_k8s.md&shellonly=true)
 
 ## 事前準備
 
@@ -13,11 +20,6 @@ Trust repo にチェックを入れて進んでください。
 なお、**Googleアカウントと請求先アカウントは別物です！** 請求先アカウントとGCPのプロジェクトは1:Nの関係になっており、例えばプロジェクトAとBは請求先アカウント1(に設定されているカード), プロジェクトCは請求先アカウント2(に設定されているカード)のように設定することが可能です。
 ![billing_account](https://cloud.google.com/static/billing/docs/images/resource-hierarchy-overview.png?hl=ja)
 
-## やること
+## 最終目的
 
-todo アプリをデプロイする
-
-- project 作成
-- フロントエンドのデプロイ (firebase)
-- Cloud SQL の構築
-- Cloud Run をデプロイ(環境変数を含む)
+todo アプリをデプロイすること
