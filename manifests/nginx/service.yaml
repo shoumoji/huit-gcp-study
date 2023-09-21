@@ -7,7 +7,6 @@ metadata:
     cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
 spec:
   type: ClusterIP # Service にクラスタ内部で使用できるIPを付与するタイプ
-  clusterIP: None # 今回は外部公開するためClusterIPが不要なので付与しない
   selector:
     name: nginx # ServiceとしてまとめるPodのラベル
   ports:
