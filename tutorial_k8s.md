@@ -397,19 +397,18 @@ PodとServiceは以下のような関係を持ちます。
     apiVersion: v1
     kind: Service
     metadata:
+      namespace: huit-k8s-nginx
       name: huit-k8s-nginx-service # Service名
       annotations:
         cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
     spec:
-      type: ClusterIP # Service にクラスタ内部で使用できるIPを付与するタイプ
-      clusterIP: None # 今回は外部公開するためClusterIPが不要なので付与しない
+      type: NodePort # Service にクラスタ内部で使用できるIPを付与するタイプ
       selector:
-        name: nginx # ServiceとしてまとめるPodのラベル
+        app: nginx # ServiceとしてまとめるPodのラベル
       ports:
-        - name: http
-          port: 80 # Serviceとして待ち受けるポート
-          protocol: TCP
+        - port: 80 # Serviceとして待ち受けるポート
           targetPort: 80 # コンテナ側のポート
+          nodePort: 30080 # ノードのポート
     ```
 - service を作成します
     ```bash
@@ -420,12 +419,13 @@ PodとServiceは以下のような関係を持ちます。
     kubectl get service -n huit-k8s-nginx
     ```
 
-## Service をインターネットに公開する
+## Service を ingress 経由で接続できるようにする
 
-最後に、先ほど作成したServiceをインターネットに公開します。
+先ほどのServiceはNodePortを使用しているため、NodePort経由でアクセスは可能ですが、ポート番号が30000番以降と一般にはHTTPに使わないポート番号になってしまいます。
 
-Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ外部からのアクセスができません。
-これをインターネットに公開するためには、以下の3つの方法があります。
+ですので、先ほど作成したServiceを更にingress経由でインターネットに公開します。
+
+インターネットに公開するためには、以下の3つの方法があります。
 
 - NodePort でノードの持つポートをServiceに紐づける (L4(トランスポート)レイヤ)
 - LoadBalancer でロードバランサへのTCPやUDPのアクセスをServiceに紐づける (L4(トランスポート)レイヤ)
@@ -436,7 +436,7 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
 引用元: イラストでわかるDockerとKubernetes 図3-17
 ![public_service](https://raw.githubusercontent.com/shoumoji/huit-gcp-study/main/image/public_service.png)
 
-今回はHTTPサーバであるNginxをインターネットに公開するので、ingressを使って公開します。
+今回はHTTPサーバであるNginxをインターネットに公開するので、HTTPで使われることの多いingressを使って公開します。
 
 - 今回使うマニフェストを確認します
     ```bash
@@ -464,21 +464,8 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
     ```bash
     kubectl apply -f manifests/nginx/ingress.yaml
     ```
-- ingress が作成されたことを確認します
+- ingress が作成されたことを確認し、ingressのIPアドレスを取得します
     ```bash
     kubectl get ingress -n huit-k8s-nginx
     ```
-
-## Service を NodePort で公開する
-
-ingressでの公開がだめだった場合、NodePortで公開します。
-
-- nodeport で公開する service を作成します
-    ```bash
-    kubectl apply -f manifests/nginx/service_nodeport.yaml
-    ```
-- service が作成されたことを確認します
-    ```bash
-    kubectl get service -n huit-k8s-nginx
-    ```
-- 最後に、手元のブラウザから <nodeportのIP>:10080 でNginxに接続できることを確認します。
+- IPアドレスにお手元のブラウザでアクセスして、Welcome to nginx!のページが表示されれば成功です！お疲れ様でした！

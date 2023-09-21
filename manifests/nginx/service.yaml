@@ -6,11 +6,10 @@ metadata:
   annotations:
     cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
 spec:
-  type: ClusterIP # Service にクラスタ内部で使用できるIPを付与するタイプ
+  type: NodePort # Service にクラスタ内部で使用できるIPを付与するタイプ
   selector:
     app: nginx # ServiceとしてまとめるPodのラベル
   ports:
-    - name: http
-      port: 80 # Serviceとして待ち受けるポート
-      protocol: TCP
+    - port: 80 # Serviceとして待ち受けるポート
       targetPort: 80 # コンテナ側のポート
+      nodePort: 30080 # ノードのポート
