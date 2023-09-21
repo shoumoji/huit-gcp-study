@@ -420,7 +420,7 @@ PodとServiceは以下のような関係を持ちます。
 	kubectl get service -n huit-k8s-nginx
 	```
 
-### Service をインターネットに公開する
+## Service をインターネットに公開する
 
 最後に、先ほど作成したServiceをインターネットに公開します。
 
