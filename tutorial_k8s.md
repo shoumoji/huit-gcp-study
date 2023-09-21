@@ -197,6 +197,8 @@ GKEではAutopilotモード or Standardモードを選べますが、Autopilot�
 ### GKE クラスタに接続できるかテストする
 
 GKEクラスタが作成されたら、k8sクラスタを操作してみましょう。
+ちなみに、[GCPのコンソール上でもGKEのクラスタの存在を確認できます。](https://console.cloud.google.com/kubernetes/list/overview)
+
 k8sクラスタへの操作はk8sクラスタのコントロールプレーンが持つWebAPIを用いて行います。
 
 しかし、毎回WebAPIを叩いて操作するのは非常に大変なので、一般には**kubectl**という専用のコマンドラインツールを使います。
@@ -423,7 +425,7 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
 引用元: イラストでわかるDockerとKubernetes 図3-17
 ![public_service](https://raw.githubusercontent.com/shoumoji/huit-gcp-study/main/image/public_service.png)
 
-今回はHTTPサーバであるNginxを公開するので、ingressを使って公開します。
+今回はHTTPサーバであるNginxをインターネットに公開するので、ingressを使って公開します。
 
 - 今回使うマニフェストを確認します
 	```bash
