@@ -1,0 +1,31 @@
+# 使用するk8sクラスタのWebAPIバージョン
+apiVersion: apps/v1
+# このマニフェストで行うワークロード
+kind: Deployment
+metadata:
+  namespace: huit-k8s-nginx
+  # Deployment自体の名前
+  # kubectl get deployments -A などをすると、この名前が表示される
+  name: nginx-deployment
+  labels:
+    # このDeployment自体のラベル
+    # kubectl get deployments -l app=nginx などで絞り込むときに使う
+    app: nginx
+spec:
+  # 作成・維持するPodの数。この値の数になるようにクラスタでPodを管理する
+  replicas: 3
+  selector:
+    matchLabels:
+      # どのPodがこのDeploymentによって管理されるか決める
+      # 基本的にspec.template.metadata.labelsに存在するラベルと同じものを指定する
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx # このDeploymentで作成されるPodに付与されるラベル
+    spec:
+      containers:
+        - name: nginx # コンテナ名
+          image: nginx:latest # コンテナイメージ名
+          ports:
+            - containerPort: 80 # コンテナが公開しているポート番号(TCP)
