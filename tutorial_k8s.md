@@ -274,7 +274,7 @@ kubectl get pods -n kube-system
 	```
 	このマニフェストは、`huit-k8s-nginx` という名前のnamespaceを作成するためのマニフェストです。
 	```yaml
-	# ファイルの内容を紹介しているだけなので、コマンドとして実行しないでください
+	# コマンドとして実行しないでください
 	apiVersion: v1 # 使用するk8sのWebAPIバージョン。k8sクラスタのバージョンによって異なる。
 	kind: Namespace # このマニフェストで行うワークロードの種類。今回はnamespaceの設定なのでNamespaceとなる。
 	metadata:
@@ -393,7 +393,7 @@ PodとServiceは以下のような関係を持ちます。
 	```
 	このマニフェストは、NginxのPodをServiceとして一纏めにするためのマニフェストです。
 	```yaml
-	# ファイルの内容を紹介しているだけなので、コマンドとして実行しないでください
+	# コマンドとして実行しないでください
 	apiVersion: v1
 	kind: Service
 	metadata:
@@ -444,7 +444,7 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
 	```
 	このマニフェストは、NginxのPodをまとめたServiceをインターネットに公開するためのマニフェストです。
 	```yaml
-	# ファイルの内容を紹介しているだけなので、コマンドとして実行しないでください
+	# コマンドとして実行しないでください
 	apiVersion: networking.k8s.io/v1 # 使用するk8sのWebAPIバージョン
 	kind: Ingress
 	metadata:
