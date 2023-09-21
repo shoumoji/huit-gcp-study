@@ -214,7 +214,7 @@ kubectl はk8sを扱う上で必須のツールなので、k8sとセットで覚
 
 - GKEの認証情報をkubectlに設定します
 	```bash
-	gcloud container clusters get-credentials asia-northeast1
+	gcloud container clusters get-credentials dmm-cluster
 	```
 - kubectlが正しくGKEと接続できているか確認するため、ノード一覧を出力します
 	```bash
