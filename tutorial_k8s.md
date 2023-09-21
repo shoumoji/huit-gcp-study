@@ -6,10 +6,9 @@
 
 ### 必要なロール(権限)の確認
 
-ハンズオンを進めるためには以下 **1** or **2** の何れかの IAM ロールが必要です。
+ハンズオンを進めるためには以下の IAM ロールが必要です。
 
-1. [オーナー](https://cloud.google.com/iam/docs/understanding-roles#basic)
-2. [編集者](https://cloud.google.com/iam/docs/understanding-roles#basic)、[Project IAM 管理者](https://cloud.google.com/iam/docs/understanding-roles#resourcemanager.projectIamAdmin)、[Cloud Run 管理者](https://cloud.google.com/iam/docs/understanding-roles#run.admin)、[Firebase 管理者](https://cloud.google.com/iam/docs/understanding-roles#firebase.admin)
+- [オーナー](https://cloud.google.com/iam/docs/understanding-roles#basic)
 
 新規にプロジェクトを作った場合、もしくはこちらでプロジェクトを用意した場合問題ないですが、既存のプロジェクトで権限周りを触っている方は注意してください。
 
@@ -24,7 +23,7 @@ sudo apt update && sudo apt upgrade -y
 #### GCP のプロジェクト ID を環境変数に設定
 
 環境変数 `PROJECT_ID` に GCP プロジェクト ID を設定します。[GOOGLE_CLOUD_PROJECT_ID] 部分に使用する Google Cloud プロジェクトの ID を入力してください。
-例: `export PROJECT_ID=huit-gcp-study-ayumin`
+例: `export PROJECT_ID=huit-k8s-ayumin`
 
 ```bash
 export PROJECT_ID=[GOOGLE_CLOUD_PROJECT_ID]
