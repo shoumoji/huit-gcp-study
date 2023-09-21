@@ -1,6 +1,7 @@
 apiVersion: networking.k8s.io/v1 # 使用するk8sのWebAPIバージョン
 kind: Ingress
 metadata:
+  namespace: huit-k8s-nginx
   name: huit-k8s-nginx-ingress # Ingress の名前
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
