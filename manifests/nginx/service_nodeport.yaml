@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: huit-k8s-nginx
+  name: huit-k8s-nginx-service # Service名
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
+spec:
+  type: NodePort # Service にクラスタ内部で使用できるIPを付与するタイプ
+  selector:
+    name: nginx # ServiceとしてまとめるPodのラベル
+  ports:
+    - port: 80 # Serviceとして待ち受けるポート
+      targetPort: 80 # コンテナ側のポート
+      nodePort: 10080

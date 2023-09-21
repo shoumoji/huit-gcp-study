@@ -419,6 +419,7 @@ PodとServiceは以下のような関係を持ちます。
 	```bash
 	kubectl get service -n huit-k8s-nginx
 	```
+- 最後に、手元のブラウザからNginxに接続できることを確認します。
 
 ## Service をインターネットに公開する
 
@@ -468,4 +469,17 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
 	```bash
 	kubectl get ingress -n huit-k8s-nginx
 	```
-- 最後に、手元のブラウザからNginxに接続できることを確認します。
+
+## Service を NodePort で公開する
+
+ingressでの公開がだめだった場合、NodePortで公開します。
+
+- nodeport で公開する service を作成します
+	```bash
+	kubectl apply -f manifests/nginx/service_nodeport.yaml
+	```
+- service が作成されたことを確認します
+	```bash
+	kubectl get service -n huit-k8s-nginx
+	```
+- 最後に、手元のブラウザから <nodeportのIP>:10080 でNginxに接続できることを確認します。
