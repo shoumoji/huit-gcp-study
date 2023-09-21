@@ -419,7 +419,6 @@ PodとServiceは以下のような関係を持ちます。
     ```bash
     kubectl get service -n huit-k8s-nginx
     ```
-- 最後に、手元のブラウザからNginxに接続できることを確認します。
 
 ## Service をインターネットに公開する
 
