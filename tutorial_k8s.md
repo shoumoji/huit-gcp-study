@@ -407,7 +407,7 @@ PodとServiceは以下のような関係を持ちます。
 		name: nginx # ServiceとしてまとめるPodのラベル
 	  ports:
 		- name: http
-		  port: 8080 # Serviceとして待ち受けるポート
+		  port: 80 # Serviceとして待ち受けるポート
 		  protocol: TCP
 		  targetPort: 80 # コンテナ側のポート
 	```
