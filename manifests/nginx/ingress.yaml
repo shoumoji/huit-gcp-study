@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1 # 使用するk8sのWebAPIバージョン
+kind: Ingress
+metadata:
+  name: huit-k8s-nginx-ingress # Ingress の名前
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  # 今回はdefaultBackendを使い、全て単一のサービスにルーティングしている
+  # ingressではパスを使って、/foo/* ならこのサービス、/bar/* ならこのサービス…という設定もできる
+  defaultBackend:
+    service:
+      name: huit-k8s-nginx-service # Ingressが通信を受け取った後に転送するサービス名
+      port:
+        number: 80

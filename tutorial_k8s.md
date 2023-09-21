@@ -381,6 +381,22 @@ PodとServiceは以下のような関係を持ちます。
 	```
 	このマニフェストは、NginxのPodをServiceとして一纏めにするためのマニフェストです。
 	```yaml
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: huit-k8s-nginx-service # Service名
+	  annotations:
+		cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
+	spec:
+	  type: ClusterIP # Service にクラスタ内部で使用できるIPを付与するタイプ
+	  clusterIP: None # 今回は外部公開するためClusterIPが不要なので付与しない
+	  selector:
+		name: nginx # ServiceとしてまとめるPodのラベル
+	  ports:
+		- name: http
+		  port: 8080 # Serviceとして待ち受けるポート
+		  protocol: TCP
+		  targetPort: 80 # コンテナ側のポート
 	```
 - service を作成します
 	```bash
@@ -415,6 +431,20 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
 	```
 	このマニフェストは、NginxのPodをまとめたServiceをインターネットに公開するためのマニフェストです。
 	```yaml
+	apiVersion: networking.k8s.io/v1 # 使用するk8sのWebAPIバージョン
+	kind: Ingress
+	metadata:
+	  name: huit-k8s-nginx-ingress # Ingress の名前
+	  annotations:
+		cloud.google.com/neg: '{"ingress": true}'
+	spec:
+	  # 今回はdefaultBackendを使い、全て単一のサービスにルーティングしている
+	  # ingressではパスを使って、/foo/* ならこのサービス、/bar/* ならこのサービス…という設定もできる
+	  defaultBackend:
+		service:
+		  name: huit-k8s-nginx-service # Ingressが通信を受け取った後に転送するサービス名
+		  port:
+			number: 80
 	```
 - ingress を作成します
 	```bash
