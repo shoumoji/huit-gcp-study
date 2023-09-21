@@ -103,21 +103,21 @@ Artifact Registry に push する方法は[tutorial_hackathon.md](/tutorial_hack
 その上で以下のコマンドを実行してください。
 
 - cloud shell のディレクトリを作成する (既にある場合は無視してOK)
-	```bash
-	mkdir -p ~/cloudshell_open
-	```
+    ```bash
+    mkdir -p ~/cloudshell_open
+    ```
 - ディレクトリに移動する
-	```bash
-	cd ~/cloudshell_open
-	```
+    ```bash
+    cd ~/cloudshell_open
+    ```
 - 今回使用するリポジトリをクローンする
-	```bash
-	git clone https://github.com/shoumoji/huit-gcp-study.git
-	```
+    ```bash
+    git clone https://github.com/shoumoji/huit-gcp-study.git
+    ```
 - リポジトリ内にディレクトリを移動する
-	```bash
-	cd huit-gcp-study
-	```
+    ```bash
+    cd huit-gcp-study
+    ```
 
 ## コンテナについて復習
 
@@ -155,20 +155,20 @@ k8sエコシステム全体を俯瞰したい場合、[Kubernetesの知識地図
 クラスタの作成には時間がかかるため、その間にk8sの基本的な概念を説明します。
 
 - 最初に今後のハンズオンで必要なAPIを一括で有効化しておきます
-	```bash
-	gcloud services enable \
-	container.googleapis.com \
-	compute.googleapis.com \
-	sqladmin.googleapis.com \
-	servicenetworking.googleapis.com \
-	dns.googleapis.com \
-	networkconnectivity.googleapis.com \
-	artifactregistry.googleapis.com
-	```
+    ```bash
+    gcloud services enable \
+    container.googleapis.com \
+    compute.googleapis.com \
+    sqladmin.googleapis.com \
+    servicenetworking.googleapis.com \
+    dns.googleapis.com \
+    networkconnectivity.googleapis.com \
+    artifactregistry.googleapis.com
+    ```
 - GKEでk8sクラスタを作成します
-	```bash
-	gcloud container clusters create-auto dmm-cluster
-	```
+    ```bash
+    gcloud container clusters create-auto dmm-cluster
+    ```
 
 クラスタを作成している間に、k8sの基本概念について説明します。
 
@@ -213,19 +213,19 @@ kubectl はk8sを扱う上で必須のツールなので、k8sとセットで覚
 それはともかく、本ハンズオンでは一般的に使用されているkubectlを使ってクラスタに接続・操作してみます。
 
 - GKEの認証情報をkubectlに設定します
-	```bash
-	gcloud container clusters get-credentials dmm-cluster
-	```
+    ```bash
+    gcloud container clusters get-credentials dmm-cluster
+    ```
 - kubectlが正しくGKEと接続できているか確認するため、ノード一覧を出力します
-	```bash
-	kubectl get nodes
-	```
-	ここで以下のような出力が出ればOKです。
-	```bash
-	NAME                                         STATUS   ROLES    AGE     VERSION
-	gk3-dmm-cluster-default-pool-eaa1fd5e-vqzf   Ready    <none>   4m37s   v1.27.3-gke.100
-	gk3-dmm-cluster-pool-1-aefed762-kmcn         Ready    <none>   96s     v1.27.3-gke.100
-	```
+    ```bash
+    kubectl get nodes
+    ```
+    ここで以下のような出力が出ればOKです。
+    ```bash
+    NAME                                         STATUS   ROLES    AGE     VERSION
+    gk3-dmm-cluster-default-pool-eaa1fd5e-vqzf   Ready    <none>   4m37s   v1.27.3-gke.100
+    gk3-dmm-cluster-pool-1-aefed762-kmcn         Ready    <none>   96s     v1.27.3-gke.100
+    ```
 
 ## namespaceを作成する
 
@@ -269,33 +269,33 @@ kubectl get pods -n kube-system
 マニフェストのapplyは、 `kubectl apply -f <マニフェストファイルのパス>` というコマンドで行います。
 
 - まず、今回使うマニフェストを確認します。cloud shellのエディタで閲覧してもOKです。
-	```bash
-	cat manifests/nginx/namespace.yaml
-	```
-	このマニフェストは、`huit-k8s-nginx` という名前のnamespaceを作成するためのマニフェストです。
-	```yaml
-	# コマンドとして実行しないでください
-	apiVersion: v1 # 使用するk8sのWebAPIバージョン。k8sクラスタのバージョンによって異なる。
-	kind: Namespace # このマニフェストで行うワークロードの種類。今回はnamespaceの設定なのでNamespaceとなる。
-	metadata:
-	  name: huit-k8s-nginx # 作成するnamespaceの名前。任意のネームスペース名をつけられる。
-	  labels:
-		name: huit-k8s # このnamespaceにつけるラベル。複数のネームスペースをまとめるために使う。
-	```
+    ```bash
+    cat manifests/nginx/namespace.yaml
+    ```
+    このマニフェストは、`huit-k8s-nginx` という名前のnamespaceを作成するためのマニフェストです。
+    ```yaml
+    # コマンドとして実行しないでください
+    apiVersion: v1 # 使用するk8sのWebAPIバージョン。k8sクラスタのバージョンによって異なる。
+    kind: Namespace # このマニフェストで行うワークロードの種類。今回はnamespaceの設定なのでNamespaceとなる。
+    metadata:
+      name: huit-k8s-nginx # 作成するnamespaceの名前。任意のネームスペース名をつけられる。
+      labels:
+        name: huit-k8s # このnamespaceにつけるラベル。複数のネームスペースをまとめるために使う。
+    ```
 - `huit-k8s-nginx` という名前のnamespaceを作成します
-	```bash
-	kubectl apply -f manifests/nginx/namespace.yaml
-	```
+    ```bash
+    kubectl apply -f manifests/nginx/namespace.yaml
+    ```
 - namespace が作成できたか確認します
-	```bash
-	kubectl get namespace
-	```
-	huit-k8s-nginx という名前のnamespaceが作成されていれば成功です。
+    ```bash
+    kubectl get namespace
+    ```
+    huit-k8s-nginx という名前のnamespaceが作成されていれば成功です。
 - 補足(実行不要): マニフェストを使わずに kubectl で直接 namespace を作成することもできます
-	```bash
-	kubectl create namespace huit-k8s-nginx # namespaceを作成
-	kubectl label namespaces huit-k8s-nginx name=huit-k8s --overwrite=true # 作成したnamespaceにラベルを付与
-	```
+    ```bash
+    kubectl create namespace huit-k8s-nginx # namespaceを作成
+    kubectl label namespaces huit-k8s-nginx name=huit-k8s --overwrite=true # 作成したnamespaceにラベルを付与
+    ```
 
 ## Nginx をデプロイする
 
@@ -317,53 +317,53 @@ Podは、コンテナを論理的にまとめるための概念です。例え�
 なお今回はNginxの公開イメージを使うので、コンテナのbuildやpushは不要です。
 
 - 今回使うマニフェストを確認します
-	```bash
-	cat manifests/nginx/deployment.yaml
-	```
-	このマニフェストは、NginxをDeploymentとしてデプロイするためのマニフェストです。
-	```yaml
-	# ファイルの内容を紹介しているだけなので、コマンドとして実行しないでください
-	# 使用するk8sクラスタのWebAPIバージョン
-	apiVersion: apps/v1
-	# このマニフェストで行うワークロード
-	kind: Deployment
-	metadata:
-	  namespace: huit-k8s-nginx # このDeploymentを作成するnamespace名
-	  # Deployment自体の名前
-	  # kubectl get deployments -A などをすると、この名前が表示される
-	  name: nginx-deployment
-	  labels:
-	    # このDeployment自体のラベル
-		# kubectl get deployments -l app=nginx などで絞り込むときに使う
-		app: nginx
-	spec:
-	  # 作成・維持するPodの数。この値の数になるようにクラスタでPodを管理する
-	  replicas: 3
-	  selector:
-		matchLabels:
-		  # どのPodがこのDeploymentによって管理されるか決める
-		  # 基本的にspec.template.metadata.labelsに存在するラベルと同じものを指定する
-		  app: nginx
-	  template:
-		metadata:
-		  labels:
-			app: nginx # このDeploymentで作成されるPodに付与されるラベル
-		spec:
-		  containers:
-			- name: nginx # コンテナ名
-			  image: nginx:latest # コンテナイメージ名
-			  ports:
-				- containerPort: 80 # コンテナが公開しているポート番号(TCP)
-	```
-	- Nginx をデプロイします
-	```bash
-	kubectl apply -f manifests/nginx/deployment.yaml
-	```
-	- Nginx がデプロイされたか確認します
-	```bash
-	kubectl get pod -n huit-k8s-nginx
-	```
-	3つのPodが作成されていることが確認できれば成功です。
+    ```bash
+    cat manifests/nginx/deployment.yaml
+    ```
+    このマニフェストは、NginxをDeploymentとしてデプロイするためのマニフェストです。
+    ```yaml
+    # ファイルの内容を紹介しているだけなので、コマンドとして実行しないでください
+    # 使用するk8sクラスタのWebAPIバージョン
+    apiVersion: apps/v1
+    # このマニフェストで行うワークロード
+    kind: Deployment
+    metadata:
+      namespace: huit-k8s-nginx # このDeploymentを作成するnamespace名
+      # Deployment自体の名前
+      # kubectl get deployments -A などをすると、この名前が表示される
+      name: nginx-deployment
+      labels:
+        # このDeployment自体のラベル
+        # kubectl get deployments -l app=nginx などで絞り込むときに使う
+        app: nginx
+    spec:
+      # 作成・維持するPodの数。この値の数になるようにクラスタでPodを管理する
+      replicas: 3
+      selector:
+        matchLabels:
+          # どのPodがこのDeploymentによって管理されるか決める
+          # 基本的にspec.template.metadata.labelsに存在するラベルと同じものを指定する
+          app: nginx
+      template:
+        metadata:
+          labels:
+            app: nginx # このDeploymentで作成されるPodに付与されるラベル
+        spec:
+          containers:
+            - name: nginx # コンテナ名
+              image: nginx:latest # コンテナイメージ名
+              ports:
+                - containerPort: 80 # コンテナが公開しているポート番号(TCP)
+    ```
+    - Nginx をデプロイします
+    ```bash
+    kubectl apply -f manifests/nginx/deployment.yaml
+    ```
+    - Nginx がデプロイされたか確認します
+    ```bash
+    kubectl get pod -n huit-k8s-nginx
+    ```
+    3つのPodが作成されていることが確認できれば成功です。
 
 ## Service を作成する
 
@@ -388,37 +388,37 @@ PodとServiceは以下のような関係を持ちます。
 では、Serviceを作成してみます。
 
 - 今回使うマニフェストを確認します
-	```bash
-	cat manifests/nginx/service.yaml
-	```
-	このマニフェストは、NginxのPodをServiceとして一纏めにするためのマニフェストです。
-	```yaml
-	# コマンドとして実行しないでください
-	apiVersion: v1
-	kind: Service
-	metadata:
-	  name: huit-k8s-nginx-service # Service名
-	  annotations:
-		cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
-	spec:
-	  type: ClusterIP # Service にクラスタ内部で使用できるIPを付与するタイプ
-	  clusterIP: None # 今回は外部公開するためClusterIPが不要なので付与しない
-	  selector:
-		name: nginx # ServiceとしてまとめるPodのラベル
-	  ports:
-		- name: http
-		  port: 80 # Serviceとして待ち受けるポート
-		  protocol: TCP
-		  targetPort: 80 # コンテナ側のポート
-	```
+    ```bash
+    cat manifests/nginx/service.yaml
+    ```
+    このマニフェストは、NginxのPodをServiceとして一纏めにするためのマニフェストです。
+    ```yaml
+    # コマンドとして実行しないでください
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: huit-k8s-nginx-service # Service名
+      annotations:
+        cloud.google.com/neg: '{"ingress": true}' # GCP特有の設定
+    spec:
+      type: ClusterIP # Service にクラスタ内部で使用できるIPを付与するタイプ
+      clusterIP: None # 今回は外部公開するためClusterIPが不要なので付与しない
+      selector:
+        name: nginx # ServiceとしてまとめるPodのラベル
+      ports:
+        - name: http
+          port: 80 # Serviceとして待ち受けるポート
+          protocol: TCP
+          targetPort: 80 # コンテナ側のポート
+    ```
 - service を作成します
-	```bash
-	kubectl apply -f manifests/nginx/service.yaml
-	```
+    ```bash
+    kubectl apply -f manifests/nginx/service.yaml
+    ```
 - service が作成されたことを確認します
-	```bash
-	kubectl get service -n huit-k8s-nginx
-	```
+    ```bash
+    kubectl get service -n huit-k8s-nginx
+    ```
 - 最後に、手元のブラウザからNginxに接続できることを確認します。
 
 ## Service をインターネットに公開する
@@ -440,46 +440,46 @@ Serviceは `ClusterIP` というIPを持ちますが、このIPはクラスタ�
 今回はHTTPサーバであるNginxをインターネットに公開するので、ingressを使って公開します。
 
 - 今回使うマニフェストを確認します
-	```bash
-	cat manifests/nginx/ingress.yaml
-	```
-	このマニフェストは、NginxのPodをまとめたServiceをインターネットに公開するためのマニフェストです。
-	```yaml
-	# コマンドとして実行しないでください
-	apiVersion: networking.k8s.io/v1 # 使用するk8sのWebAPIバージョン
-	kind: Ingress
-	metadata:
-	  name: huit-k8s-nginx-ingress # Ingress の名前
-	  annotations:
-		cloud.google.com/neg: '{"ingress": true}'
-	spec:
-	  # 今回はdefaultBackendを使い、全て単一のサービスにルーティングしている
-	  # ingressではパスを使って、/foo/* ならこのサービス、/bar/* ならこのサービス…という設定もできる
-	  defaultBackend:
-		service:
-		  name: huit-k8s-nginx-service # Ingressが通信を受け取った後に転送するサービス名
-		  port:
-			number: 80
-	```
+    ```bash
+    cat manifests/nginx/ingress.yaml
+    ```
+    このマニフェストは、NginxのPodをまとめたServiceをインターネットに公開するためのマニフェストです。
+    ```yaml
+    # コマンドとして実行しないでください
+    apiVersion: networking.k8s.io/v1 # 使用するk8sのWebAPIバージョン
+    kind: Ingress
+    metadata:
+      name: huit-k8s-nginx-ingress # Ingress の名前
+      annotations:
+        cloud.google.com/neg: '{"ingress": true}'
+    spec:
+      # 今回はdefaultBackendを使い、全て単一のサービスにルーティングしている
+      # ingressではパスを使って、/foo/* ならこのサービス、/bar/* ならこのサービス…という設定もできる
+      defaultBackend:
+        service:
+          name: huit-k8s-nginx-service # Ingressが通信を受け取った後に転送するサービス名
+          port:
+            number: 80
+    ```
 - ingress を作成します
-	```bash
-	kubectl apply -f manifests/nginx/ingress.yaml
-	```
+    ```bash
+    kubectl apply -f manifests/nginx/ingress.yaml
+    ```
 - ingress が作成されたことを確認します
-	```bash
-	kubectl get ingress -n huit-k8s-nginx
-	```
+    ```bash
+    kubectl get ingress -n huit-k8s-nginx
+    ```
 
 ## Service を NodePort で公開する
 
 ingressでの公開がだめだった場合、NodePortで公開します。
 
 - nodeport で公開する service を作成します
-	```bash
-	kubectl apply -f manifests/nginx/service_nodeport.yaml
-	```
+    ```bash
+    kubectl apply -f manifests/nginx/service_nodeport.yaml
+    ```
 - service が作成されたことを確認します
-	```bash
-	kubectl get service -n huit-k8s-nginx
-	```
+    ```bash
+    kubectl get service -n huit-k8s-nginx
+    ```
 - 最後に、手元のブラウザから <nodeportのIP>:10080 でNginxに接続できることを確認します。
